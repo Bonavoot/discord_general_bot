@@ -5,9 +5,12 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("r")
     .setDescription("Starts a ready check for the bois!"),
+
   async execute(interaction) {
-    // Fortnite button
+    // Select a game embed buttons
+
     const row = new MessageActionRow()
+      // Forknife
       .addComponents(
         new MessageButton()
           .setCustomId("Forknife")
@@ -46,29 +49,34 @@ module.exports = {
           .setStyle("DANGER")
       );
 
-    // Select a game embed
-    const embedGamePick = new MessageEmbed()
-      .setColor("GREEN")
-      .setTitle("SELECT A GAME FUCKO!")
-      .setDescription("ReadyBoi Beta V69.0.0")
-      .setTimestamp();
-
-    await interaction.reply({
-      embeds: [embedGamePick],
-      components: [row],
+    await interaction.channel.send({
       ephemeral: true,
+      content: "Pick a game fucko",
+      components: [row],
     });
+    // Username Array
+    let usernames = ["Me "];
 
     const embedReadyCheck = new MessageEmbed()
       .setColor("GREEN")
-      .setTitle(`READY UP FUCKOS!`)
-      .setDescription("ReadyBoi Beta V69.0.0")
+      .setTitle(`READY UP FOR `)
+
+      .addField("Current Roster:", `${usernames}`)
       .setTimestamp();
 
     const collector = interaction.channel.createMessageComponentCollector({});
-    let usernames = [];
-    collector.on("collect", (interaction) => {
+
+    // collector.on("interactionCreate",  (interaction) => {
+    //   if (!interaction.isButton()) return;
+
+    //   const btn_id = interaction.customId;
+    //   console.log(btn_id);
+    // });
+
+    collector.on("collect", async (interaction) => {
       if (interaction.customId === "ready") {
+        if (usernames.includes(" " + interaction.user.username + " ")) return;
+
         usernames.push(" " + interaction.user.username + " ");
 
         // Add Names to Embed
@@ -77,10 +85,11 @@ module.exports = {
           .setColor("GREEN")
           .setTitle(`READY UP FOR `)
           .addField("Current Roster:", `${usernames}`)
+
           .setTimestamp();
 
-        interaction.update({ embeds: [newEmbedWithNames] });
-      } else if (interaction.customId === "notready") {
+        await interaction.update({ embeds: [newEmbedWithNames] });
+      } else if (interaction.customId === "unready") {
         for (let i = 0; i < usernames.length; i++) {
           if (usernames[i] === " " + interaction.user.username + " ") {
             usernames.splice(i, 1);
@@ -93,11 +102,13 @@ module.exports = {
           .setColor("GREEN")
           .setTitle(`READY UP FOR `)
           .addField("Current Roster:", `${usernames}`)
+
           .setTimestamp();
 
-        interaction.update({ embeds: [newEmbedWithNames] });
+        await interaction.update({ embeds: [newEmbedWithNames] });
       } else {
-        interaction.reply({
+        await interaction.reply({
+          content: "@everyone",
           ephemeral: false,
           embeds: [embedReadyCheck],
           components: [ready],

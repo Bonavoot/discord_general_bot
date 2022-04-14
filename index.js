@@ -41,15 +41,12 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-// let usernames = [];
-// client.on("interactionCreate", (interaction) => {
-//   if (!interaction.isButton()) return;
-//   // if (usernames.includes(" " + interaction.user.username + " ")) return;
+// client.on("interactionCreate", async (interaction) => {
+// if (!interaction.isButton()) return;
 
-//   usernames.push(" " + interaction.user.username + " ");
-
-//   interaction.update(` ${usernames} is ready for ${interaction.customId}!`);
+// const btn_id = interaction.customId;
+// console.log(btn_id);
+// await interaction.deferReply({ content: `${btn_id}` });
 // });
 
-// // Login to Discord with your client's token
 client.login(token);

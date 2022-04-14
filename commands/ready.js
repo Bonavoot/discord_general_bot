@@ -48,14 +48,13 @@ module.exports = {
           .setLabel("UNREADY")
           .setStyle("DANGER")
       );
+    let usernames = ["Me "];
 
-    await interaction.channel.send({
-      ephemeral: true,
+    await interaction.reply({
       content: "Pick a game fucko",
       components: [row],
+      ephemeral: true,
     });
-    // Username Array
-    let usernames = ["Me "];
 
     const embedReadyCheck = new MessageEmbed()
       .setColor("GREEN")
@@ -66,12 +65,12 @@ module.exports = {
 
     const collector = interaction.channel.createMessageComponentCollector({});
 
-    // collector.on("interactionCreate",  (interaction) => {
-    //   if (!interaction.isButton()) return;
+    collector.on("interactionCreate", (interaction) => {
+      if (!interaction.isButton()) return;
 
-    //   const btn_id = interaction.customId;
-    //   console.log(btn_id);
-    // });
+      const btn_id = interaction.customId;
+      console.log(btn_id);
+    });
 
     collector.on("collect", async (interaction) => {
       if (interaction.customId === "ready") {
@@ -88,7 +87,7 @@ module.exports = {
 
           .setTimestamp();
 
-        await interaction.update({ embeds: [newEmbedWithNames] });
+        interaction.update({ embeds: [newEmbedWithNames] });
       } else if (interaction.customId === "unready") {
         for (let i = 0; i < usernames.length; i++) {
           if (usernames[i] === " " + interaction.user.username + " ") {
@@ -105,10 +104,9 @@ module.exports = {
 
           .setTimestamp();
 
-        await interaction.update({ embeds: [newEmbedWithNames] });
+        interaction.update({ embeds: [newEmbedWithNames] });
       } else {
-        await interaction.reply({
-          content: "@everyone",
+        interaction.reply({
           ephemeral: false,
           embeds: [embedReadyCheck],
           components: [ready],
